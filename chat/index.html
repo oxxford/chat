@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <h1> Chatic</h1>
+    <h2 id="status"></h2>
+    <div id="messages">
+
+    </div>
+
+    <form action="" id='forma'>
+        <input type="test" id="message">
+    </form>
+    <script>
+        function setStatus (status) {
+            const st = document.getElementById('status');
+            st.innerText = status;
+        }
+
+        function setMessage (message) {
+            const ms = document.getElementById('messages');
+            ms.append(message);            
+        }
+
+        const ws = new WebSocket('ws://10.240.21.87:3000')
+
+        ws.onopen = () => setStatus('Online');
+        ws.onclose = () => setStatus('Offline');
+
+        ws.onmessage = (response) => setMessage(response.data);
+
+        const form = document.getElementById('forma');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const inputValue = document.getElementById('message');
+            ws.send(inputValue.value);
+            inputValue.value = '';
+        });
+    </script>
+</body>
+</html>
